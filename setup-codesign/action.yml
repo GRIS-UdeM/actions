@@ -23,24 +23,30 @@ runs:
       shell: bash
       run: |
         set +x
+        echo "1"
         if [[ -n "$APPLE_DEVELOPER_ID_APPLICATION" ]]; then
         echo $"APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
         export CODESIGN_APP_SECUREFILEPATH=$PWD/gris-app-cert.p12
         fi
+        echo "2"
         if [[ -n "$APPLE_DEVELOPER_ID_INSTALLER" ]]; then
         echo "$APPLE_DEVELOPER_ID_INSTALLER" | base64 --decode > gris-installer-cert.p12
         export CODESIGN_INSTALLER_SECUREFILEPATH=$PWD/gris-installer-cert.p12
         fi
+        echo "3"
         KEY_CHAIN=build.keychain
         security create-keychain -p github "$KEY_CHAIN"
         security default-keychain -s "$KEY_CHAIN"
         security unlock-keychain -p github "$KEY_CHAIN"
+        echo "4"
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
         security import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
         fi
+        echo "5"
         if [[ -f "$CODESIGN_INSTALLER_SECUREFILEPATH" ]]; then
         security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
         fi
+        echo "6"
         security set-key-partition-list -S apple-tool:,apple: -s -k github "$KEY_CHAIN"
         rm -f "$CODESIGN_APP_SECUREFILEPATH" "$CODESIGN_INSTALLER_SECUREFILEPATH"
         set -x
