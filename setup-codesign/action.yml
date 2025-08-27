@@ -44,7 +44,7 @@ runs:
         echo "$CODESIGN_APP_SECUREFILEPATH"
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
           echo "4.33"
-          security import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
+          security -v import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
           echo "4.66"
         fi
         echo "5"
