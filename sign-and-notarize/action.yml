@@ -66,7 +66,7 @@ runs:
       xcrun notarytool submit $APP_PATH$APP_NAME.zip \
           --team-id $APPLE_TEAM_ID \
           --apple-id $APPLE_DEV_EMAIL \
-          --password $APPLE_APP_PASSWORD" \
+          --password "$APPLE_APP_PASSWORD" \
           --progress \
           --wait
 
