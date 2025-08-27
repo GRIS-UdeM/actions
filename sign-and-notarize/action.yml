@@ -32,7 +32,7 @@ runs:
     run: |
       security unlock-keychain -p github build.keychain
       # Sign the universal binary
-      codesign --force --deep --strict --timestamp --options=runtime --sign $APPLE_DEV_IDENTITY $APP_PATH_NAME.app
+      codesign --force --deep --strict --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $APP_PATH_NAME.app
 
   - name: Notarize
     env:
