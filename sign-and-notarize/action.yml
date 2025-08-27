@@ -11,7 +11,7 @@ inputs:
   apple-dev-team:
     description: "Apple team id"
     required: true
-  apple-dev-password:
+  apple-app-password:
     description: 'GRIS apple developper password'
     required: true
   app-path-name:
