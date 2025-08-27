@@ -27,6 +27,13 @@ outputs:
 runs:
   using: "composite"
   steps:
+  - name: unzip
+    env:
+      APP_PATH: ${{ inputs.app-path }}
+      APP_NAME: ${{ inputs.app-name }}
+    shell: bash
+    run: |
+    (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
   - name: Sign
     env:
       APP_PATH: ${{ inputs.app-path }}
@@ -38,10 +45,6 @@ runs:
       # Sign the universal binary
       codesign --force --deep --strict --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $APP_PATH$APP_NAME.app
 
-  - name: unzip
-    shell: bash
-    run: |
-    (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
   - name: Notarize
     env:
       APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
