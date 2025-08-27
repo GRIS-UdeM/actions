@@ -22,7 +22,6 @@ runs:
         APPLE_DEVELOPER_ID_PASSWORD: ${{ inputs.apple-dev-password }}
       shell: bash
       run: |
-        set +x
         echo "1"
         if [[ -n "$APPLE_DEVELOPER_ID_APPLICATION" ]]; then
           echo $"APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
@@ -42,6 +41,7 @@ runs:
         security unlock-keychain -p github "$KEY_CHAIN"
         echo "4"
         echo "$CODESIGN_APP_SECUREFILEPATH"
+        cat gris-app-cert.p12
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
           echo "4.33"
           security -v import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
@@ -54,4 +54,3 @@ runs:
         echo "6"
         security set-key-partition-list -S apple-tool:,apple: -s -k github "$KEY_CHAIN"
         rm -f "$CODESIGN_APP_SECUREFILEPATH" "$CODESIGN_INSTALLER_SECUREFILEPATH"
-        set -x
