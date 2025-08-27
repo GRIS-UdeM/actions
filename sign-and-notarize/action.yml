@@ -49,11 +49,13 @@ runs:
   - name: Notarize
     env:
       APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
-      APP_PATH_NAME: ${{ inputs.app-path-name }}
+      APP_PATH: ${{ inputs.app-path }}
+      APP_NAME: ${{ inputs.app-name }}
       APPLE_TEAM_ID: ${{ inputs.apple-dev-team }}
       APPLE_DEV_EMAIL : ${{ inputs.apple-dev-email }}
     shell: bash
     run: |
+      set -x
       security unlock-keychain -p github build.keychain
 
       # Create zip for notarization
