@@ -2,11 +2,11 @@ name: 'Setup Codesign'
 description: 'Setup codesigning heychains and certificate on a macOS machine'
 
 inputs:
-  apple-dev-id-application:
-    description: 'certificate id for the application'
+  apple-application-cert:
+    description: 'path to the application certificate'
     required: true
-  apple-dev-id-installer:
-    description: 'certificate id for the installer'
+  apple-installer-cert:
+    description: 'path to the installer certificate'
     required: true
   apple-dev-password:
     description: 'GRIS apple developper password'
@@ -17,24 +17,13 @@ runs:
     - name: setup-codesign
       env:
 
-        APPLE_DEVELOPER_ID_APPLICATION: ${{ inputs.apple-dev-id-application }}
-        APPLE_DEVELOPER_ID_INSTALLER: ${{ inputs.apple-dev-id-installer }}
+        CODESIGN_APP_SECUREFILEPATH: ${{ inputs.apple-application-cert }}
+        CODESIGN_INSTALLER_SECUREFILEPATH: ${{ inputs.apple-installer-cert }}
         APPLE_DEVELOPER_ID_PASSWORD: ${{ inputs.apple-dev-password }}
       shell: bash
       run: |
         echo "1"
         set -x
-        if [[ -n "$APPLE_DEVELOPER_ID_APPLICATION" ]]; then
-          echo $"APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
-          export CODESIGN_APP_SECUREFILEPATH=$PWD/gris-app-cert.p12
-          echo "1.5"
-        fi
-        echo "2"
-        if [[ -n "$APPLE_DEVELOPER_ID_INSTALLER" ]]; then
-          echo "$APPLE_DEVELOPER_ID_INSTALLER" | base64 --decode > gris-installer-cert.p12
-          export CODESIGN_INSTALLER_SECUREFILEPATH=$PWD/gris-installer-cert.p12
-          echo "2.5"
-        fi
         echo "3"
         KEY_CHAIN=build.keychain
         security create-keychain -p github2 "$KEY_CHAIN"2
