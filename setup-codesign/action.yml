@@ -23,6 +23,7 @@ runs:
       shell: bash
       run: |
         echo "1"
+        set -x
         if [[ -n "$APPLE_DEVELOPER_ID_APPLICATION" ]]; then
           echo $"APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
           export CODESIGN_APP_SECUREFILEPATH=$PWD/gris-app-cert.p12
