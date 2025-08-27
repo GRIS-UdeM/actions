@@ -23,12 +23,12 @@ runs:
       shell: bash
       run: |
         set +x
-        if [[ -n APPLE_DEVELOPER_ID_APPLICATION" ]]; then
-        echo APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
+        if [[ -n "$APPLE_DEVELOPER_ID_APPLICATION" ]]; then
+        echo $"APPLE_DEVELOPER_ID_APPLICATION" | base64 --decode > gris-app-cert.p12
         export CODESIGN_APP_SECUREFILEPATH=$PWD/gris-app-cert.p12
         fi
-        if [[ -n APPLE_DEVELOPER_ID_INSTALLER" ]]; then
-        echo APPLE_DEVELOPER_ID_INSTALLER" | base64 --decode > gris-installer-cert.p12
+        if [[ -n "$APPLE_DEVELOPER_ID_INSTALLER" ]]; then
+        echo "$APPLE_DEVELOPER_ID_INSTALLER" | base64 --decode > gris-installer-cert.p12
         export CODESIGN_INSTALLER_SECUREFILEPATH=$PWD/gris-installer-cert.p12
         fi
         KEY_CHAIN=build.keychain
