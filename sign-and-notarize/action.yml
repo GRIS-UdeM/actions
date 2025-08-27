@@ -20,6 +20,12 @@ inputs:
   app-name:
     description: 'name of the app (something like SpeakerView or SpatGRIS)'
     required: true
+
+outputs:
+  notarized-app-folder:
+    description: "Folder in which the notarized app is"
+    required: true
+    value: "Builds/notarized/"
 runs:
   using: "composite"
   steps:
@@ -57,10 +63,4 @@ runs:
       xcrun stapler staple $APP_PATH_NAME.app
       xcrun stapler validate $APP_PATH_NAME.app
       mkdir -p Builds/notarized
-      mv $APP_PATH_NAME.app Builds/notarized/
-
-  - name: Upload Artifact
-    uses: actions/upload-artifact@v4
-    with:
-      name: ${{ input.app-name + "-macos-signed"}}
-      path: "Builds/notarized/"
+      mv $APP_PATH_NAME.app
