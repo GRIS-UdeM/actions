@@ -1,0 +1,66 @@
+name: 'Setup Codesign'
+description: 'Setup codesigning heychains and certificate on a macOS machine'
+
+inputs:
+  apple-dev-identity:
+    description: "Identity of the apple dev"
+    required: true
+  apple-dev-email:
+    description: "email of the apple dev"
+    required: true
+  apple-dev-team:
+    description: "Apple team id"
+    required: true
+  apple-dev-password:
+    description: 'GRIS apple developper password'
+    required: true
+  app-path-name:
+    description: 'Path of the app folder without .app suffix'
+    required: true
+  app-name:
+    description: 'name of the app (something like SpeakerView or SpatGRIS)'
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: Sign
+    env:
+      APP_PATH_NAME: ${{ inputs.app-path-name }}
+      APPLE_DEV_IDENTITY : ${{ inputs.apple-dev-identity }}
+    run: |
+      security unlock-keychain -p github build.keychain
+      # Sign the universal binary
+      codesign --force --deep --strict --timestamp --options=runtime --sign $APPLE_DEV_IDENTITY $APP_PATH_NAME.app
+
+  - name: Notarize
+    env:
+      APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
+      APP_PATH_NAME: ${{ inputs.app-path-name }}
+      APPLE_TEAM_ID: ${{ inputs.apple-dev-team }}
+      APPLE_DEV_EMAIL : ${{ inputs.apple-dev-email }}
+    run: |
+      security unlock-keychain -p github build.keychain
+
+      # Create zip for notarization
+      cd Builds/MacOSX/build/Release
+      zip -r $APP_PATH_NAME.zip $APP_PATH_NAME.app
+
+      # Submit for notarization
+      xcrun notarytool submit $APP_PATH_NAME.zip \
+          --team-id $APPLE_TEAM_ID \
+          --apple-id $APPLE_DEV_EMAIL \
+          --password $APPLE_APP_PASSWORD" \
+          --progress \
+          --wait
+
+      # Staple the notarization
+      xcrun stapler staple $APP_PATH_NAME.app
+      xcrun stapler validate $APP_PATH_NAME.app
+      mkdir -p Builds/notarized
+      mv $APP_PATH_NAME.app Builds/notarized/
+
+  - name: Upload Artifact
+    uses: actions/upload-artifact@v4
+    with:
+      name: ${{ input.app-name + "-macos-signed"}}
+      path: "Builds/notarized/"
