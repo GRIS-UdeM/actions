@@ -37,7 +37,7 @@ runs:
         fi
         echo "3"
         KEY_CHAIN=build.keychain
-        security create-keychain -p github2 "$KEY_CHAIN"
+        security create-keychain -p github2 "$KEY_CHAIN"2
         security default-keychain -s "$KEY_CHAIN"
         security unlock-keychain -p github2 "$KEY_CHAIN"
         echo "4"
@@ -53,5 +53,5 @@ runs:
           security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild
         fi
         echo "6"
-        security set-key-partition-list -S apple-tool:,apple: -s -k github2 "$KEY_CHAIN"
+        security set-key-partition-list -S apple-tool:,apple: -s -k github2 "$KEY_CHAIN"2
         rm -f "$CODESIGN_APP_SECUREFILEPATH" "$CODESIGN_INSTALLER_SECUREFILEPATH"
