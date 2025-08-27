@@ -26,9 +26,9 @@ runs:
         set -x
         echo "3"
         KEY_CHAIN=build.keychain
-        security create-keychain -p github2 "$KEY_CHAIN"2
+        security create-keychain -p github "$KEY_CHAIN"
         security default-keychain -s "$KEY_CHAIN"
-        security unlock-keychain -p github2 "$KEY_CHAIN"
+        security unlock-keychain -p github "$KEY_CHAIN"
         echo "4"
         echo "$CODESIGN_APP_SECUREFILEPATH"
         cat gris-app-cert.p12
