@@ -36,10 +36,10 @@ runs:
         security default-keychain -s "$KEY_CHAIN"
         security unlock-keychain -p github "$KEY_CHAIN"
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
-        security import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
+        security import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
         fi
         if [[ -f "$CODESIGN_INSTALLER_SECUREFILEPATH" ]]; then
-        security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
+        security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
         fi
         security set-key-partition-list -S apple-tool:,apple: -s -k github "$KEY_CHAIN"
         rm -f "$CODESIGN_APP_SECUREFILEPATH" "$CODESIGN_INSTALLER_SECUREFILEPATH"
