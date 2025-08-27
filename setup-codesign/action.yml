@@ -31,7 +31,6 @@ runs:
         security unlock-keychain -p github "$KEY_CHAIN"
         echo "4"
         echo "$CODESIGN_APP_SECUREFILEPATH"
-        cat gris-app-cert.p12
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
           echo "4.33"
           security -v import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild
