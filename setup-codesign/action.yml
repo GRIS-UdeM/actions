@@ -20,6 +20,7 @@ runs:
         APPLE_DEVELOPER_ID_APPLICATION: ${{ inputs.apple-dev-id-application }}
         APPLE_DEVELOPER_ID_INSTALLER: ${{ inputs.apple-dev-id-installer }}
         APPLE_DEVELOPER_ID_PASSWORD: ${{ inputs.apple-dev-password }}
+      shell: bash
       run: |
         set +x
         if [[ -n APPLE_DEVELOPER_ID_APPLICATION" ]]; then

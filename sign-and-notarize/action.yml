@@ -17,9 +17,6 @@ inputs:
   app-path-name:
     description: 'Path of the app folder without .app suffix'
     required: true
-  app-name:
-    description: 'name of the app (something like SpeakerView or SpatGRIS)'
-    required: true
 
 outputs:
   notarized-app-folder:
@@ -33,6 +30,7 @@ runs:
     env:
       APP_PATH_NAME: ${{ inputs.app-path-name }}
       APPLE_DEV_IDENTITY : ${{ inputs.apple-dev-identity }}
+    shell: bash
     run: |
       security unlock-keychain -p github build.keychain
       # Sign the universal binary
@@ -44,6 +42,7 @@ runs:
       APP_PATH_NAME: ${{ inputs.app-path-name }}
       APPLE_TEAM_ID: ${{ inputs.apple-dev-team }}
       APPLE_DEV_EMAIL : ${{ inputs.apple-dev-email }}
+    shell: bash
     run: |
       security unlock-keychain -p github build.keychain
 
