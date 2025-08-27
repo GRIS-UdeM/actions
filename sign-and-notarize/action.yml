@@ -3,37 +3,45 @@ description: 'Setup codesigning heychains and certificate on a macOS machine'
 
 inputs:
   apple-dev-identity:
-    description: "Identity of the apple dev"
+    description: 'Identity of the apple dev'
     required: true
   apple-dev-email:
-    description: "email of the apple dev"
+    description: 'email of the apple dev'
     required: true
   apple-dev-team:
-    description: "Apple team id"
+    description: 'Apple team id'
     required: true
   apple-app-password:
     description: 'GRIS apple developper password'
     required: true
-  app-path-name:
-    description: 'Path of the app folder without .app suffix'
+  app-path:
+    description: 'Folder in which the .zip is'
+    required: true
+  app-name:
+    description: 'Name of the app folder without file suffix (file should be a .zip)'
     required: true
 outputs:
   notarized-app-folder:
-    description: "Folder in which the notarized app is"
-    value: "Builds/notarized/"
+    description: 'Folder in which the notarized app is'
+    value: 'Builds/notarized/'
 runs:
   using: "composite"
   steps:
   - name: Sign
     env:
-      APP_PATH_NAME: ${{ inputs.app-path-name }}
+      APP_PATH: ${{ inputs.app-path }}
+      APP_NAME: ${{ inputs.app-name }}
       APPLE_DEV_IDENTITY : ${{ inputs.apple-dev-identity }}
     shell: bash
     run: |
       security unlock-keychain -p github build.keychain
       # Sign the universal binary
-      codesign --force --deep --strict --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $APP_PATH_NAME.app
+      codesign --force --deep --strict --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $APP_PATH$APP_NAME.app
 
+  - name: unzip
+    shell: bash
+    run: |
+    (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
   - name: Notarize
     env:
       APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
@@ -46,10 +54,10 @@ runs:
 
       # Create zip for notarization
       cd Builds/MacOSX/build/Release
-      zip -r $APP_PATH_NAME.zip $APP_PATH_NAME.app
+      zip -r $APP_PATH$APP_NAME.zip -$APP_PATH$APP_NAME.app
 
       # Submit for notarization
-      xcrun notarytool submit $APP_PATH_NAME.zip \
+      xcrun notarytool submit $APP_PATH$APP_NAME.zip \
           --team-id $APPLE_TEAM_ID \
           --apple-id $APPLE_DEV_EMAIL \
           --password $APPLE_APP_PASSWORD" \
@@ -57,7 +65,7 @@ runs:
           --wait
 
       # Staple the notarization
-      xcrun stapler staple $APP_PATH_NAME.app
-      xcrun stapler validate $APP_PATH_NAME.app
+      xcrun stapler staple $APP_PATH$APP_NAME.app
+      xcrun stapler validate $APP_PATH$APP_NAME.app
       mkdir -p Builds/notarized
-      mv $APP_PATH_NAME.app
+      mv $APP_PATH$APP_NAME.app Builds/notarized
