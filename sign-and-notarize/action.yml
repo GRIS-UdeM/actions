@@ -33,7 +33,8 @@ runs:
       APP_NAME: ${{ inputs.app-name }}
     shell: bash
     run: |
-    (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
+      (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
+
   - name: Sign
     env:
       APP_PATH: ${{ inputs.app-path }}
