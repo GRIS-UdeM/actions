@@ -45,12 +45,12 @@ runs:
         cat gris-app-cert.p12
         if [[ -f "$CODESIGN_APP_SECUREFILEPATH" ]]; then
           echo "4.33"
-          security -v import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
+          security -v import "$CODESIGN_APP_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild
           echo "4.66"
         fi
         echo "5"
         if [[ -f "$CODESIGN_INSTALLER_SECUREFILEPATH" ]]; then
-          security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild  > /dev/null 2>&1
+          security import "$CODESIGN_INSTALLER_SECUREFILEPATH" -A -k "$KEY_CHAIN" -P "$APPLE_DEVELOPER_ID_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/pkgbuild
         fi
         echo "6"
         security set-key-partition-list -S apple-tool:,apple: -s -k github "$KEY_CHAIN"
