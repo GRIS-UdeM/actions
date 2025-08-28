@@ -19,6 +19,6 @@ runs:
     shell: bash
     run: |
       security unlock-keychain -p github build.keychain
-      for filename in *; do
+      for filename in $PATH_TO_SIGN/*; do
         codesign --force --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" "$filename"
       done
