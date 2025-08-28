@@ -19,6 +19,8 @@ inputs:
     required: true
   app-file-suffix:
     description: 'Suffix of the app (.app, .vst, .whatever) with the dot included'
+    required: true
+
 outputs:
   notarized-app-folder:
     description: 'Folder in which the notarized app is'
