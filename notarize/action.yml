@@ -1,10 +1,7 @@
-name: 'Setup Codesign'
-description: 'Setup codesigning heychains and certificate on a macOS machine'
+name: 'Notarize'
+description: 'Notarize signed binaries'
 
 inputs:
-  apple-dev-identity:
-    description: 'Identity of the apple dev'
-    required: true
   apple-dev-email:
     description: 'email of the apple dev'
     required: true
@@ -20,37 +17,20 @@ inputs:
   app-name:
     description: 'Name of the app folder without file suffix (file should be a .zip)'
     required: true
+  app-file-suffix:
+    description: 'Suffix of the app (.app, .vst, .whatever) with the dot included'
 outputs:
   notarized-app-folder:
     description: 'Folder in which the notarized app is'
     value: 'Builds/notarized/'
 runs:
   using: "composite"
-  steps:
-  - name: unzip
-    env:
-      APP_PATH: ${{ inputs.app-path }}
-      APP_NAME: ${{ inputs.app-name }}
-    shell: bash
-    run: |
-      (unzip -a $APP_PATH$APP_NAME.zip -d $APP_PATH && rm $APP_PATH$APP_NAME.zip)
-
-  - name: Sign
-    env:
-      APP_PATH: ${{ inputs.app-path }}
-      APP_NAME: ${{ inputs.app-name }}
-      APPLE_DEV_IDENTITY : ${{ inputs.apple-dev-identity }}
-    shell: bash
-    run: |
-      security unlock-keychain -p github build.keychain
-      # Sign the universal binary
-      codesign --force --deep --strict --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $APP_PATH$APP_NAME.app
-
   - name: Notarize
     env:
       APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
       APP_PATH: ${{ inputs.app-path }}
       APP_NAME: ${{ inputs.app-name }}
+      APP_FILE_SUFFIX: ${{ inputs.app-file-suffix }}
       APPLE_TEAM_ID: ${{ inputs.apple-dev-team }}
       APPLE_DEV_EMAIL : ${{ inputs.apple-dev-email }}
     shell: bash
@@ -60,7 +40,7 @@ runs:
 
       # Create zip for notarization
 
-      zip -r $APP_PATH$APP_NAME.zip $APP_PATH$APP_NAME.app
+      zip -r $APP_PATH$APP_NAME.zip $APP_PATH$APP_NAME$APP_FILE_SUFFIX
 
       # Submit for notarization
       xcrun notarytool submit $APP_PATH$APP_NAME.zip \
@@ -71,7 +51,7 @@ runs:
           --wait
 
       # Staple the notarization
-      xcrun stapler staple $APP_PATH$APP_NAME.app
-      xcrun stapler validate $APP_PATH$APP_NAME.app
+      xcrun stapler staple $APP_PATH$APP_NAME$APP_SUFFIX
+      xcrun stapler validate $APP_PATH$APP_NAME$APP_SUFFIX
       mkdir -p Builds/notarized
-      mv $APP_PATH$APP_NAME.app Builds/notarized
+      mv $APP_PATH$APP_NAME$APP_SUFFIX Builds/notarized

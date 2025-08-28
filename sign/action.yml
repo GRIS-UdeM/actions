@@ -1,0 +1,23 @@
+name: 'Sign'
+description: 'Sign files on a macOS machine'
+
+inputs:
+  apple-dev-identity:
+    description: 'Identity of the apple dev'
+    required: true
+  path-to-sign:
+    description: 'Path to sign'
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: Sign
+    env:
+      PATH_TO_SIGN: ${{ inputs.path-to-sign }}
+      APP_NAME: ${{ inputs.app-name }}
+      APPLE_DEV_IDENTITY : ${{ inputs.apple-dev-identity }}
+    shell: bash
+    run: |
+      security unlock-keychain -p github build.keychain
+      # Sign the universal binary
+      codesign --force --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $PATH_TO_SIGN
