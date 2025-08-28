@@ -27,6 +27,7 @@ outputs:
     value: 'Builds/notarized/'
 runs:
   using: "composite"
+  steps:
   - name: Notarize
     env:
       APPLE_APP_PASSWORD: ${{ inputs.apple-app-password }}
