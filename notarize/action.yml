@@ -54,7 +54,7 @@ runs:
           --wait
 
       # Staple the notarization
-      xcrun stapler staple $APP_PATH$APP_NAME$APP_SUFFIX
-      xcrun stapler validate $APP_PATH$APP_NAME$APP_SUFFIX
+      xcrun stapler staple $APP_PATH$APP_NAME$APP_FILE_SUFFIX
+      xcrun stapler validate $APP_PATH$APP_NAME$APP_FILE_SUFFIX
       mkdir -p Builds/notarized
       mv $APP_PATH$APP_NAME$APP_SUFFIX Builds/notarized
