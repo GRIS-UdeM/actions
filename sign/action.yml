@@ -6,7 +6,7 @@ inputs:
     description: 'Identity of the apple dev'
     required: true
   path-to-sign:
-    description: 'Path to sign'
+    description: 'Folder to sign'
     required: true
 runs:
   using: "composite"
@@ -19,5 +19,6 @@ runs:
     shell: bash
     run: |
       security unlock-keychain -p github build.keychain
-      # Sign the universal binary
-      codesign --force --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" $PATH_TO_SIGN
+      for filename in *; do
+        codesign --force --timestamp --options=runtime --sign "$APPLE_DEV_IDENTITY" "$filename"
+      done
